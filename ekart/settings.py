@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "category",
+    "accounts",
 ]
 
 MIDDLEWARE = [
@@ -67,6 +69,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "ekart.wsgi.application"
+
+#using custom user model - notifying settings.py
+AUTH_USER_MODEL = 'accounts.Account' # appName(accounts).modelName(Account)
 
 
 # Database
@@ -129,3 +134,8 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+#MEDIA FILES
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR /'media'
