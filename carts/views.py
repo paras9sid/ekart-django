@@ -13,6 +13,21 @@ def _cart_id(request):
     return cart
 
 def add_cart(request, product_id):
+
+    if request.method == 'POST':
+        # taking value from browser url # both bwlo coming from product_detail.html
+        color = request.POST['color']
+        size = request.POST['size']
+        print(color, size)
+
+
+    # Before POST mehtod - for get method to check # taking value from browser url # both bwlo coming from product_detail.html
+    # color = request.GET['color']
+    # size = request.GET['size']
+    # print(color, size)
+    # return HttpResponse(color + ' ' +size)
+    # exit()
+
     product = Product.objects.get(id=product_id)
     try:
         cart = Cart.objects.get(cart_id= _cart_id(request)) # get the cart using the cart id present in the session
