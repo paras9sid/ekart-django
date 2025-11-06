@@ -43,17 +43,58 @@ def add_cart(request, product_id):
         )
     cart.save()
 
-    try:
-        cart_item = CartItem.objects.get(product=product, cart=cart)
-        cart_item.qty += 1
-        cart_item.save()
-    except CartItem.DoesNotExist:
+    is_cart_item_exist = CartItem.objects.filter(product=product, cart=cart)
+    if is_cart_item_exist:
+        cart_item = CartItem.objects.filter(product=product, cart=cart)
+        # existing variations -> from database
+        # current variations -> product_id variation
+        
+        # item_id -> from database
+        existing_variation_list = []
+        id = []
+        for item in cart_item:
+            existing_variation = item.variations.all()
+            existing_variation_list.append(list(existing_variation))
+            id.append(item.id)
+
+        print(existing_variation_list)
+
+        if product_variation in existing_variation_list:
+            # return HttpResponse('true')
+            
+            #increase the cart item qty
+            index = existing_variation_list.index(product_variation)
+            item_id = id[index]
+            item = CartItem.objects.get(product=product, id=item_id)
+            item.qty += 1
+            item.save()
+
+
+        else:
+            # return HttpResponse('false')
+            
+            # create new cart item
+            item = CartItem.objects.create(
+                product=product,
+                qty=1,
+                cart=cart
+            )
+            if len(product_variation) > 0:
+                item.variations.clear()
+                item.variations.add(*product_variation)
+            item.save()
+
+    else:
         cart_item = CartItem.objects.create(
             product = product,
             qty = 1,
             cart = cart,
         )
+        if len(product_variation) > 0:
+            cart_item.variations.clear()
+            cart_item.variations.add(*product_variation)
         cart_item.save()
+        
     return redirect('cart')
 
 def remove_cart(request, product_id):
