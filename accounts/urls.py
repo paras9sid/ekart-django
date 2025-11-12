@@ -12,4 +12,12 @@ urlpatterns = [
     #activate url for user registation activation
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
 
+    #forgot password
+    path('forgotPassword', views.forgotPassword, name='forgotPassword'),
+    #reset password link validation
+    path('resetpassword_validate/<uidb64>/<token>/', views.resetpassword_validate, name='resetpassword_validate'),
+    #reset password page
+    path('resetPassword', views.resetPassword, name='resetPassword'),
+
+
 ]
