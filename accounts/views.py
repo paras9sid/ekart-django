@@ -51,12 +51,15 @@ def register(request):
             try:
                 send_email = EmailMessage(mail_subject, message, to=[email])
                 send_email.send()
-                messages.success(request, 'Registration successful! Check your email for an activation link.')
+                # messages.success(request, 'Registration successful! Check your email for an activation link.')
+                return redirect('/accounts/login/?command=verification&email='+ user.email)
             except Exception as e:
                 print("Email sending failed:", e)
                 messages.error(request, 'Registration complete, but email sending failed.')
 
             return redirect('register')
+            
+
     else:
         form = RegistrationForm()
 
@@ -88,5 +91,23 @@ def logout(request):
 
 def activate(request, uidb64, token):
     
-    # to check activation link working or not.
-    return HttpResponse('OK')
+    # to remporary check activation link working or not.
+    # return HttpResponse('OK')
+
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = Account._default_manager.get(pk=uid) # will return the suer object
+    except(TypeError, ValueError, OverflowError, Account.DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        messages.success(request, "Congratulations! Your account is activated.")
+        return redirect('login')
+    else:
+        messages.error(request, "Invalid activation link!")
+        return redirect('register')
+
+
+
