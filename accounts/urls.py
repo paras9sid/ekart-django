@@ -5,5 +5,19 @@ from . import views
 urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.login, name='login'), 
-    path('logout/', views.logout, name='logout'),     
+    path('logout/', views.logout, name='logout'),
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('', views.dashboard, name='dashboard'),
+
+    #activate url for user registation activation
+    path('activate/<uidb64>/<token>/', views.activate, name='activate'),
+
+    #forgot password
+    path('forgotPassword', views.forgotPassword, name='forgotPassword'),
+    #reset password link validation
+    path('resetpassword_validate/<uidb64>/<token>/', views.resetpassword_validate, name='resetpassword_validate'),
+    #reset password page
+    path('resetPassword', views.resetPassword, name='resetPassword'),
+
+
 ]
