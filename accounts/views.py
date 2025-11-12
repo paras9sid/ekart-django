@@ -1,6 +1,15 @@
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
+#verfication email
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import EmailMessage
+
 
 from .forms import RegistrationForm
 from .models import Account
@@ -8,8 +17,7 @@ from .models import Account
 
 # Create your views here.
 def register(request):
-
-    if request.method=='POST':
+    if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
             first_name = form.cleaned_data['first_name']
@@ -19,19 +27,40 @@ def register(request):
             password = form.cleaned_data['password']
             username = email.split('@')[0]
 
-            user = Account.objects.create_user(first_name=first_name, last_name=last_name, email=email, username=username, password=password)
-            # we are nto giving phone number earlier first so after careting user we will provide phone number
+            user = Account.objects.create_user(
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                username=username,
+                password=password,
+            )
             user.phone_number = phone_number
+            user.is_active = False  # require activation
             user.save()
-            messages.success(request, 'Registration Successful.')
+
+            # Send activation email
+            current_site = get_current_site(request)
+            mail_subject = "Please activate your account"
+            message = render_to_string('accounts/account_verification_email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': default_token_generator.make_token(user),
+            })
+
+            try:
+                send_email = EmailMessage(mail_subject, message, to=[email])
+                send_email.send()
+                messages.success(request, 'Registration successful! Check your email for an activation link.')
+            except Exception as e:
+                print("Email sending failed:", e)
+                messages.error(request, 'Registration complete, but email sending failed.')
+
             return redirect('register')
     else:
         form = RegistrationForm()
 
-    context = {
-        'form' : form,
-    }
-    return render(request, 'accounts/register.html', context)
+    return render(request, 'accounts/register.html', {'form': form})
 
 def login(request):
     if request.method=='POST':
@@ -55,3 +84,9 @@ def logout(request):
     auth.logout(request)
     messages.success(request, "You are logged out.")
     return redirect('login')
+
+
+def activate(request, uidb64, token):
+    
+    # to check activation link working or not.
+    return HttpResponse('OK')
