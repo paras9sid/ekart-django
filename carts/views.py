@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.decorators import login_required
 
 from store.models import Product, Variation
 from .models import Cart, CartItem
@@ -9,9 +10,11 @@ from .models import Cart, CartItem
 # Create your views here.
 def _cart_id(request):
     cart = request.session.session_key
+
     if not cart:
+        
         # reason of product not added to cart - create method not called properply.
-        # cart = request.session.create
+        # cart = request.session.create <--
 
         #correct way of calling paranthesis added-error rectified.
         cart = request.session.create()
@@ -121,8 +124,11 @@ def cart(request, total=0, qty=0, cart_items=None):
     try:
         tax = 0
         grand_total = 0
-        cart = Cart.objects.get(cart_id=_cart_id(request))
-        cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+        if request.user.is_authenticated:
+            cart_items = CartItem.objects.filter(user=request.user, is_active=True)
+        else:            
+            cart = Cart.objects.get(cart_id=_cart_id(request))
+            cart_items = CartItem.objects.filter(cart=cart, is_active=True)
         for cart_item in cart_items:
             total = total + (cart_item.product.price * cart_item.qty)
             qty = qty + cart_item.qty
@@ -140,6 +146,7 @@ def cart(request, total=0, qty=0, cart_items=None):
     }
     return render(request, 'store/cart.html', context)
 
+@login_required(login_url='login')
 def checkout(request, total=0, qty=0, cart_items=None):
     try:
         tax = 0

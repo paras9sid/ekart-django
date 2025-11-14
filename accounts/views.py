@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
+
 #verfication email
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
@@ -13,6 +14,8 @@ from django.core.mail import EmailMessage
 
 from .forms import RegistrationForm
 from .models import Account
+from carts.models import Cart, CartItem
+from carts.views import _cart_id
 
 
 # Create your views here.
@@ -73,6 +76,21 @@ def login(request):
         user = auth.authenticate(email=email, password=password)
 
         if user is not  None:
+            try:
+                # print('in this one entered-try block')
+                cart = Cart.objects.get(cart_id=_cart_id(request))
+                is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                # print(is_cart_item_exists)
+                if is_cart_item_exists:
+                    cart_item = CartItem.objects.filter(cart=cart)
+                    # print(cart_item)
+                    for item in cart_item:
+                        item.user = user
+                        item.save()
+            except:
+                print('in this one entered-except')
+                pass
+
             auth.login(request, user)
             messages.success(request, "You are now logged in !")
             return redirect("dashboard")
