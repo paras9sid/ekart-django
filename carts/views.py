@@ -10,10 +10,15 @@ from .models import Cart, CartItem
 def _cart_id(request):
     cart = request.session.session_key
     if not cart:
-        cart = request.session.create
+        # reason of product not added to cart - create method not called properply.
+        # cart = request.session.create
+
+        #correct way of calling paranthesis added-error rectified.
+        cart = request.session.create()
     return cart
 
 def add_cart(request, product_id):
+
     product = Product.objects.get(id=product_id)
     product_variation = []
 
@@ -27,13 +32,6 @@ def add_cart(request, product_id):
                 product_variation.append(variation)
             except:
                 pass
-
-    # Before POST mehtod - for get method to check # taking value from browser url # both bwlo coming from product_detail.html
-    # color = request.GET['color']
-    # size = request.GET['size']
-    # print(color, size)
-    # return HttpResponse(color + ' ' +size)
-    # exit()
 
     try:
         cart = Cart.objects.get(cart_id= _cart_id(request)) # get the cart using the cart id present in the session
@@ -141,3 +139,26 @@ def cart(request, total=0, qty=0, cart_items=None):
         'grand_total' : grand_total
     }
     return render(request, 'store/cart.html', context)
+
+def checkout(request, total=0, qty=0, cart_items=None):
+    try:
+        tax = 0
+        grand_total = 0
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+        cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+        for cart_item in cart_items:
+            total = total + (cart_item.product.price * cart_item.qty)
+            qty = qty + cart_item.qty
+        tax = (5 * total)/100 # tax is 5%
+        grand_total = total + tax
+    except ObjectDoesNotExist:
+        pass
+    
+    context = {
+        'total': total,
+        'qty': qty,
+        'cart_items' : cart_items,
+        'tax': tax,
+        'grand_total' : grand_total
+    }
+    return render(request, 'store/checkout.html', context)
