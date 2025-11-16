@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
+import requests
 
 #verfication email
 from django.contrib.sites.shortcuts import get_current_site
@@ -114,7 +115,19 @@ def login(request):
 
             auth.login(request, user)
             messages.success(request, "You are now logged in !")
-            return redirect("dashboard")
+            url = request.META.get('HTTP_REFERER')
+            try:
+                query = requests.utils.urlparse(url).query
+                print('query', query) # check the path of redirection afetr loggin in
+
+                # next=/cart/checkout/  -- redirecting to chckout page after loggin in from the cart checkout button if not logged in rather than dashboard
+                params = dict(x.split('=') for x in query.split('&'))
+                if 'next' in params:
+                    nextPage = params['next']
+                    return redirect(nextPage)
+            except:
+                return redirect("dashboard")
+                
         else:
             messages.error(request, "Invalid login credentials.")
             return redirect('login')
