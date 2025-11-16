@@ -69,26 +69,47 @@ def register(request):
     return render(request, 'accounts/register.html', {'form': form})
 
 def login(request):
+
     if request.method=='POST':
         email = request.POST['email']
         password = request.POST['password']
 
         user = auth.authenticate(email=email, password=password)
-
         if user is not  None:
             try:
-                # print('in this one entered-try block')
                 cart = Cart.objects.get(cart_id=_cart_id(request))
                 is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
-                # print(is_cart_item_exists)
                 if is_cart_item_exists:
                     cart_item = CartItem.objects.filter(cart=cart)
-                    # print(cart_item)
+                    # getting the product variation by cart it
+                    product_variation = []
                     for item in cart_item:
-                        item.user = user
-                        item.save()
+                        variation = item.variations.all()
+                        product_variation.append(list(variation))
+                    
+                    #get the cart items from the user to access his product variation
+                    cart_item = CartItem.objects.filter(user=user)
+                    existing_variation_list = []
+                    id = []
+                    for item in cart_item:
+                        existing_variation = item.variations.all()
+                        existing_variation_list.append(list(existing_variation))
+                        id.append(item.id)
+
+                    for pr in product_variation:
+                        if pr in existing_variation_list:
+                            index = existing_variation_list.index(pr)
+                            item_id = id[index]
+                            item = CartItem.objects.get(id=item_id)
+                            item.qty += 1
+                            item.user = user
+                            item.save()
+                        else:
+                            cart_item = CartItem.objects.filter(cart=cart)
+                            for item in cart_item:
+                                item.user = user
+                                item.save()
             except:
-                print('in this one entered-except')
                 pass
 
             auth.login(request, user)
