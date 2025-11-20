@@ -1,6 +1,8 @@
 import datetime
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
+
 
 from carts.models import CartItem
 from .forms import OrderForm
@@ -75,4 +77,4 @@ def place_order(request,total=0, qty=0):
     else:
         print("in else block error")
         return redirect('checkout')
-
+        # return render(request, 'orders/payments.html')
