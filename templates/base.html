@@ -29,6 +29,19 @@
 <!-- custom javascript -->
 <script src="{% static 'js/script.js' %}" type="text/javascript"></script>
 
+ <!--Paypal Script Initialize the JS-SDK -->
+        <!-- <script
+            src="https://www.paypal.com/sdk/js?client-id=Aav7gTY3WcADi_d7HnszYqKZCem4mqy-Xy-YKQKuXMd-3_aJTOPJCfVrxNbCo2diZeGWLYe8vIx9mQXY&buyer-country=US&currency=USD&components=buttons&enable-funding=venmo,paylater,card"
+            data-sdk-integration-source="developer-studio"
+        ></script> -->
+<script
+    src="https://www.paypal.com/sdk/js?client-id=AQFIusS1vuQPr3Hwt8j-y0ZrTgjJLxhPophrns3zE5VthpaLEkWg3r5J1ZJc524xniEc162XUAY6DHFY&buyer-country=US&currency=USD&components=buttons&enable-funding=paylater,card"
+    data-sdk-integration-source="developer-studio"
+></script>
+<!-- <script src="{% static 'js/app.js' %}"></script> -->
+
+        
+
 <script type="text/javascript">
 /// some script
 

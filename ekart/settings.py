@@ -156,3 +156,6 @@ EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 # DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# paypal button pop up error- solution - error in console - popup_open_error_iframe_fallback 
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
