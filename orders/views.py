@@ -4,14 +4,17 @@ from django.shortcuts import render, redirect
 
 from carts.models import CartItem
 from .forms import OrderForm
-from .models import Order, Payment
+from .models import Order, Payment, OrderProduct
+from store.models import Product
 
 
 # Create your views here.
 def payments(request):
     body = json.loads(request.body)
     # print(body)
+
     order=Order.objects.get(user=request.user, is_ordered=False, order_number=body['orderID'])
+
     #store transactions details payment model
     payment = Payment(
         user=request.user,
@@ -24,6 +27,48 @@ def payments(request):
     order.payment = payment
     order.is_ordered = True
     order.save() 
+
+    # move the cart items to product table
+    cart_items = CartItem.objects.filter(user=request.user)
+
+    for item in cart_items:
+        orderproduct = OrderProduct()
+        orderproduct.order_id = order.id 
+        orderproduct.payment = payment
+        orderproduct.user_id = request.user.id
+        orderproduct.product_id = item.product_id
+        orderproduct.qty = item.qty
+        orderproduct.product_price = item.product.price
+        orderproduct.ordered = True
+        orderproduct.save()
+
+        # above =- variation field is not set , because to assign manytomanyfield we have to save the order first - cant assign directly
+        cart_item = CartItem.objects.get(id=item.id)
+        product_variation = cart_item.variations.all()
+        orderproduct = OrderProduct.objects.get(id=orderproduct.id) #save ahs generted the order product id for us
+        orderproduct.variations.set(product_variation)
+        orderproduct.save()
+    
+    
+        #reduce the quantity of sold products
+        product = Product.objects.get(id=item.product_id)
+        product.stock -= item.qty
+        product.save()
+
+
+
+    # Clear the cart <- outside for loop
+    CartItem.objects.filter(user=request.user).delete()
+
+
+
+
+    # send order email to customers 
+
+
+
+    # send order number and transaction id back to sendData via JsonResponse
+
     return render(request, 'orders/payments.html')
 
 
