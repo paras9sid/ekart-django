@@ -58,6 +58,12 @@
                                     <label>State</label>
                                     <input type="text" name="state" class="form-control" required>
                                 </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <label>Pincode</label>
+                                    <input type="text" name="pin_code" class="form-control" required>
+                                </div>
                                 <div class="col form-group">
                                     <label>Country</label>
                                     <input type="text" name="country" class="form-control" required>
@@ -119,7 +125,24 @@
                                 </tbody>
                             </table>
 
-                            <button type="submit" name="submit" class="btn btn-primary btn-block">Place Order</button>
+                            <!-- Select payment method -->
+                            <div class="card">
+                                <h5 class="card-header">Select Payment Method</h5>
+                                <div class="card-body">
+                                    <!-- <p class="card-text">Paypal</p> -->
+                                    <label for="">
+                                        <input type="radio" name="payment_method" id="" value="Paypal">
+                                        <img src="{% static 'images/Paypal.png' %}" alt="Paypal" srcset="" width="100">
+                                    </label>
+                                    &emsp;
+                                    <label for="">
+                                        <input type="radio" name="payment_method" id="" value="Razorpay">
+                                        <img src="{% static 'images/razorpay_logo.png' %}" alt="Razorpay" srcset="" width="100">
+                                    </label>
+                                </div>
+                            </div>
+                            <span class="text-danger" id="payment-method-error"></span>	
+                            <button type="submit" onclick="return payMethodConfirm()" name="submit" class="btn btn-primary btn-block">Place Order</button>
                             <a href="{% url 'store' %}" class="btn btn-light btn-block">Continue Shopping</a>
 
                         </div>
@@ -131,5 +154,28 @@
 
     </div>
 </section>
+
+<script>
+
+	function payMethodConfirm(){
+		var payMethod = $("input[name='payment_method']:checked").val()
+		if(!payMethod){
+			$('#payment-method-error').html("Select Preferred Payment Method!")
+			return false;	
+		}else{
+			var conf = confirm("You have selected "+ payMethod+ " as your preferred payment method.\nClick 'OK' to continue.");
+			if(conf == true){
+				return true;
+			}else{
+				return false;
+			}
+
+		}
+}
+$('input[name=payment_method]').on('change', function(){
+	$('#payment-method-error').html("");
+})
+
+</script>
 
 {% endblock %}

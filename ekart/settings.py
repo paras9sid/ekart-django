@@ -61,6 +61,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "category.context_processors.menu_links",
                 "carts.context_processors.counter",
+                "ekart.context_processors.paypal_client_id"
             ],
         },
     },
@@ -159,3 +160,10 @@ EMAIL_USE_TLS = True
 
 # paypal button pop up error- solution - error in console - popup_open_error_iframe_fallback 
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
+
+#PAYPAL
+PAYPAL_CLIENT_ID=env('PAYPAL_CLIENT_ID')
+
+#RAZORPAY
+RZP_KEY_ID=env('RZP_KEY_ID')
+RZP_KEY_SECRET=env('RZP_KEY_SECRET')
