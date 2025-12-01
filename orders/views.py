@@ -1,4 +1,4 @@
-import datetime, json
+import datetime, json, razorpay
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -13,6 +13,9 @@ from .forms import OrderForm
 from .models import Order, Payment, OrderProduct
 from store.models import Product
 
+
+from ekart.settings import RZP_KEY_ID,RZP_KEY_SECRET
+client = razorpay.Client(auth=(RZP_KEY_ID, RZP_KEY_SECRET))
 
 # Create your views here.
 def payments(request):
@@ -124,11 +127,13 @@ def place_order(request,total=0, qty=0):
             data.country = form.cleaned_data['country']
             data.state = form.cleaned_data['state']
             data.city = form.cleaned_data['city']
+            data.pin_code = form.cleaned_data['pin_code']
             data.order_note = form.cleaned_data['order_note']
             data.order_total = grand_total
             data.tax = tax
+            data.payment_method = request.POST['payment_method']
             data.ip = request.META.get('REMOTE_ADDR')
-            data.save()           
+            data.save()   
 
             #generate order number
             yr = int(datetime.date.today().strftime('%Y'))
@@ -141,6 +146,20 @@ def place_order(request,total=0, qty=0):
             data.order_number = order_number            
             data.save()
 
+            # Razorpay Payment
+            DATA = {
+                "amount": float(data.order_total) * 100,
+                "currency": "INR",
+                "receipt": "receipt #"+data.order_number,
+                # "notes": {
+                #     "key1": "value3",
+                #     "key2": "value2"
+                # } 
+            }
+            rzp_order = client.order.create(data=DATA) 
+            rzp_order_id = rzp_order['id']
+            print(rzp_order)    
+
             #order payment page
             order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
             context = {
@@ -149,12 +168,21 @@ def place_order(request,total=0, qty=0):
                 'total': total,
                 'tax': tax,
                 'grand_total': grand_total,
+                'rzp_order_id': rzp_order_id,
+                'RZP_KEY_ID': RZP_KEY_ID,
+                'rzp_amount': float(data.order_total) * 100,
+            
             }
             return render(request, 'orders/payments.html', context)
-    else:
-        print("in else block error")
-        return redirect('checkout')
-        # return render(request, 'orders/payments.html')
+    # else:
+    #     print("in else block error")
+    #     return redirect('checkout')
+    #     # return render(request, 'orders/payments.html')
+        else:
+            print(form.errors)
+
+    # add message email add id error or validate with js code in templates
+    return redirect('checkout')
 
 def order_complete(request):
     order_number = request.GET.get('order_number')
