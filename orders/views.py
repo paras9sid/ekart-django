@@ -151,12 +151,13 @@ def place_order(request,total=0, qty=0):
                 "amount": float(data.order_total) * 100,
                 "currency": "INR",
                 "receipt": "receipt #"+data.order_number,
-                "notes": {
-                    "key1": "value3",
-                    "key2": "value2"
-                } 
+                # "notes": {
+                #     "key1": "value3",
+                #     "key2": "value2"
+                # } 
             }
-            rzp_order = client.order.create(data=DATA)    
+            rzp_order = client.order.create(data=DATA) 
+            rzp_order_id = rzp_order['id']
             print(rzp_order)    
 
             #order payment page
@@ -167,6 +168,9 @@ def place_order(request,total=0, qty=0):
                 'total': total,
                 'tax': tax,
                 'grand_total': grand_total,
+                'rzp_order_id': rzp_order_id,
+                'RZP_KEY_ID': RZP_KEY_ID,
+                'rzp_amount': float(data.order_total) * 100,
             
             }
             return render(request, 'orders/payments.html', context)
