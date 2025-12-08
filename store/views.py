@@ -48,6 +48,7 @@ def product_detail(request, category_slug, product_slug):
     except Exception as e:
         raise e
     
+    # Prevent AnonymousUser error if user is logged out and surf the product
     if request.user.is_authenticated:
         try:
             orderproduct = OrderProduct.objects.filter(user=request.user, product_id=single_product.id).exists()
