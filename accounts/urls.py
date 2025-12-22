@@ -19,5 +19,7 @@ urlpatterns = [
     #reset password page
     path('resetPassword', views.resetPassword, name='resetPassword'),
 
+    # my orders
+    path('my_orders/', views.my_orders, name='my_orders'),
 
 ]
