@@ -27,5 +27,8 @@ urlpatterns = [
 
     #change password
     path('change_password/', views.change_password, name='change_password'),
+    
+    #order detail
+    path('order_detail/<int:order_id>', views.order_detail, name='order_detail'),
 
 ]
