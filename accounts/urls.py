@@ -25,4 +25,7 @@ urlpatterns = [
     #profile
     path('edit_profile/', views.edit_profile, name='edit_profile'),
 
+    #change password
+    path('change_password/', views.change_password, name='change_password'),
+
 ]

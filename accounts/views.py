@@ -25,26 +25,26 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
+            first_name   = form.cleaned_data['first_name']
+            last_name    = form.cleaned_data['last_name']
             phone_number = form.cleaned_data['phone_number']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            username = email.split('@')[0]
+            email        = form.cleaned_data['email']
+            password     = form.cleaned_data['password']
+            username     = email.split('@')[0]
 
             user = Account.objects.create_user(
-                first_name=first_name,
-                last_name=last_name,
-                email=email,
-                username=username,
-                password=password,
+                first_name = first_name,
+                last_name  = last_name,
+                email      = email,
+                username   = username,
+                password   = password,
             )
             user.phone_number = phone_number
-            user.is_active = False  # require activation
+            user.is_active    = False  # require activation
             user.save()
 
             # Create User Profile and set default image temporary for user
-            profile = UserProfile()
+            profile         = UserProfile()
             profile.user_id = user.id
             profile.profile_picture = 'default/default-user.jpg'
             profile.save()
@@ -78,14 +78,14 @@ def register(request):
 
 def login(request):
 
-    if request.method=='POST':
-        email = request.POST['email']
+    if request.method == 'POST':
+        email    = request.POST['email']
         password = request.POST['password']
 
         user = auth.authenticate(email=email, password=password)
         if user is not  None:
             try:
-                cart = Cart.objects.get(cart_id=_cart_id(request))
+                cart                = Cart.objects.get(cart_id=_cart_id(request))
                 is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
                 if is_cart_item_exists:
                     cart_item = CartItem.objects.filter(cart=cart)
@@ -106,10 +106,10 @@ def login(request):
 
                     for pr in product_variation:
                         if pr in existing_variation_list:
-                            index = existing_variation_list.index(pr)
-                            item_id = id[index]
-                            item = CartItem.objects.get(id=item_id)
-                            item.qty += 1
+                            index     = existing_variation_list.index(pr)
+                            item_id   = id[index]
+                            item      = CartItem.objects.get(id=item_id)
+                            item.qty  += 1
                             item.user = user
                             item.save()
                         else:
@@ -154,7 +154,7 @@ def activate(request, uidb64, token):
     # return HttpResponse('OK')
 
     try:
-        uid = urlsafe_base64_decode(uidb64).decode()
+        uid  = urlsafe_base64_decode(uidb64).decode()
         user = Account._default_manager.get(pk=uid) # will return the suer object
     except(TypeError, ValueError, OverflowError, Account.DoesNotExist):
         user = None
@@ -179,7 +179,7 @@ def dashboard(request):
 
 
 def forgotPassword(request):
-    if request.method=='POST':
+    if request.method == 'POST':
         email = request.POST['email']
         if Account.objects.filter(email=email).exists():
             user = Account.objects.get(email__exact=email) # exact = case sensitive , iexact=case insensitive
@@ -187,7 +187,7 @@ def forgotPassword(request):
             # Reset password email
             current_site = get_current_site(request)
             mail_subject = "Reset your password"
-            message = render_to_string('accounts/reset_password_email.html', {
+            message      = render_to_string('accounts/reset_password_email.html', {
                 'user': user,
                 'domain': current_site.domain,
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
@@ -226,11 +226,11 @@ def resetpassword_validate(request, uidb64, token):
 def resetPassword(request):
 
     if request.method=='POST':
-        password = request.POST['password']
+        password         = request.POST['password']
         confirm_password = request.POST['confirm_password']
 
         if password == confirm_password:
-            uid = request.session.get('uid')
+            uid  = request.session.get('uid')
             user = Account.objects.get(pk=uid)
             user.set_password(password)
             user.save()
@@ -244,7 +244,7 @@ def resetPassword(request):
     else:
         return render(request, 'accounts/resetPassword.html')
 
-
+@login_required(login_url='login')
 def my_orders(request):
     orders = Order.objects.filter(user=request.user, is_ordered=True).order_by('-created_at')
     context = {
@@ -253,12 +253,13 @@ def my_orders(request):
     # return HttpResponse('OK')
     return render(request, 'accounts/my_orders.html', context)
 
+@login_required(login_url='login')
 def edit_profile(request):
     
     userProfile = get_object_or_404(UserProfile, user=request.user)
 
     if request.method == 'POST':
-        user_form = UserForm(request.POST, instance=request.user)
+        user_form    = UserForm(request.POST, instance=request.user)
         profile_form = UserProfileForm(request.POST, request.FILES, instance=userProfile)
         
         if user_form.is_valid() and profile_form.is_valid():
@@ -267,7 +268,7 @@ def edit_profile(request):
             messages.success(request, "Your profile has been updated.")
             return redirect('edit_profile')
     else:
-        user_form = UserForm(instance=request.user)
+        user_form    = UserForm(instance=request.user)
         profile_form = UserProfileForm(instance=userProfile)
     
     context = {
@@ -277,3 +278,30 @@ def edit_profile(request):
     }
 
     return render(request, 'accounts/edit_profile.html', context)
+
+@login_required(login_url='login')
+def change_password(request):
+    # return HttpResponse('change pass')
+
+    if request.method == 'POST':
+        current_password = request.POST['current_password']
+        new_password     = request.POST['new_password']
+        confirm_password = request.POST['confirm_password']
+
+        user = Account.objects.get(username__exact=request.user.username)
+
+        if new_password == confirm_password:
+            success = user.check_password(current_password)
+            if success:
+                user.set_password(new_password)
+                user.save()
+                messages.success(request, 'Password updated successfully.')
+                return redirect('change_password')
+            else:
+                messages.error(request, 'Please enter valid current password.')
+                return redirect('change_password')
+        else:
+            messages.error(request, 'Password doesn\'t match!')
+            return redirect('change_password')
+
+    return render(request, 'accounts/change_password.html')
