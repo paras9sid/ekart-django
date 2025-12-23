@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
 import requests
@@ -13,8 +13,8 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 
 
-from .forms import RegistrationForm
-from .models import Account
+from .forms import RegistrationForm, UserForm, UserProfileForm
+from .models import Account, UserProfile
 from carts.models import Cart, CartItem
 from carts.views import _cart_id
 from orders.models import Order
@@ -42,6 +42,12 @@ def register(request):
             user.phone_number = phone_number
             user.is_active = False  # require activation
             user.save()
+
+            # Create User Profile and set default image temporary for user
+            profile = UserProfile()
+            profile.user_id = user.id
+            profile.profile_picture = 'default/default-user.jpg'
+            profile.save()
 
             # Send activation email
             current_site = get_current_site(request)
@@ -246,3 +252,28 @@ def my_orders(request):
     }
     # return HttpResponse('OK')
     return render(request, 'accounts/my_orders.html', context)
+
+def edit_profile(request):
+    
+    userProfile = get_object_or_404(UserProfile, user=request.user)
+
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=request.user)
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=userProfile)
+        
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, "Your profile has been updated.")
+            return redirect('edit_profile')
+    else:
+        user_form = UserForm(instance=request.user)
+        profile_form = UserProfileForm(instance=userProfile)
+    
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'userProfile': userProfile,
+    }
+
+    return render(request, 'accounts/edit_profile.html', context)
