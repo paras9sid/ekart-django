@@ -4,6 +4,7 @@ import os
 
 from pathlib import Path
 from django.contrib.messages import constants as messages
+from decouple import config # for env file creation - second method after environ
 
 
 env = environ.Env()
@@ -15,8 +16,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY=env('SECRET_KEY')
 
+# if using decouple - and config
+# SECRET_KEY=config('SECRET_KEY')
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+
+# if using decouple - and config
+DEBUG = config('DEBUG', default=True, cast=bool) # True - default value if nothing inside debug key
 
 ALLOWED_HOSTS = []
 
@@ -35,6 +43,7 @@ INSTALLED_APPS = [
     "store",
     "carts",
     "orders",
+    "admin_honeypot",
 ]
 
 MIDDLEWARE = [
@@ -45,6 +54,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_session_timeout.middleware.SessionTimeoutMiddleware",
 ]
 
 ROOT_URLCONF = "ekart.urls"
@@ -167,3 +177,11 @@ PAYPAL_CLIENT_ID=env('PAYPAL_CLIENT_ID')
 #RAZORPAY
 RZP_KEY_ID=env('RZP_KEY_ID')
 RZP_KEY_SECRET=env('RZP_KEY_SECRET')
+
+#Session timeout
+# SESSION_EXPIRE_SECONDS = 3600  # 1 hour = 3600 seconds
+
+SESSION_EXPIRE_SECONDS = 30 # 60 seconds = 1 minutes of no activity
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
+SESSION_TIMEOUT_REDIRECT = 'accounts/login'
+
