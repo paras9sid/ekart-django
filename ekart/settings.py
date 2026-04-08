@@ -24,7 +24,7 @@ SECRET_KEY=env('SECRET_KEY')
 # DEBUG = True
 
 # if using decouple - and config
-DEBUG = config('DEBUG', default=True, cast=bool) # True - default value if nothing inside debug key
+DEBUG = env('DEBUG', default=True, cast=bool) # True - default value if nothing inside debug key
 
 ALLOWED_HOSTS = []
 
@@ -165,7 +165,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = True
+EMAIL_USE_TLS = env('EMAIL_USE_TLS')
 # DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # paypal button pop up error- solution - error in console - popup_open_error_iframe_fallback 
