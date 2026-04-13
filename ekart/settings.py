@@ -178,10 +178,18 @@ PAYPAL_CLIENT_ID=env('PAYPAL_CLIENT_ID')
 RZP_KEY_ID=env('RZP_KEY_ID')
 RZP_KEY_SECRET=env('RZP_KEY_SECRET')
 
-#Session timeout
+#Session timeout - automatic logout from admin.
 # SESSION_EXPIRE_SECONDS = 3600  # 1 hour = 3600 seconds
 
-SESSION_EXPIRE_SECONDS = 30 # 60 seconds = 1 minutes of no activity
+SESSION_EXPIRE_SECONDS = 300 # 60 seconds = 1 minutes of no activity
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 SESSION_TIMEOUT_REDIRECT = 'accounts/login'
 
+# for indian pricing of products
+
+LANGUAGE_CODE = 'en-in' 
+
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
+USE_THOUSAND_SEPARATOR = True
