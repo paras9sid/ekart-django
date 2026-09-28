@@ -24,7 +24,9 @@ SECRET_KEY=env('SECRET_KEY')
 # DEBUG = True
 
 # if using decouple - and config
-DEBUG = env('DEBUG', default=True, cast=bool) # True - default value if nothing inside debug key
+# DEBUG = env('DEBUG', default=True, cast=bool) # True - default value if nothing inside debug key
+
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['djangoekart.in','ekart-django-production.up.railway.app', '*']
 
@@ -86,13 +88,14 @@ AUTH_USER_MODEL = 'accounts.Account' # appName(accounts).modelName(Account)
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
+'''
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+'''
 
 DATABASES = {
 
