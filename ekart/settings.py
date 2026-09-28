@@ -26,8 +26,9 @@ SECRET_KEY=env('SECRET_KEY')
 # if using decouple - and config
 DEBUG = env('DEBUG', default=True, cast=bool) # True - default value if nothing inside debug key
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['djangoekart.in','ekart-django-production.up.railway.app', '*']
 
+CSRF_TRUSTED_ORIGINS = ['https://www.djangoekart.in','https://ekart-django-production.up.railway.app']
 
 # Application definition
 
@@ -93,6 +94,23 @@ DATABASES = {
     }
 }
 
+DATABASES = {
+
+    'default': {
+
+        'ENGINE': 'django.db.backends.postgresql',
+
+        'NAME': env('DB_NAME'),
+
+        'USER': env('DB_USER'),
+
+        'PASSWORD': env('DB_PASSWORD'),
+
+        'HOST': env('DB_HOST'),
+
+        'PORT': env('DB_PORT'),
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -161,8 +179,8 @@ MESSAGE_TAGS = {
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 ##
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = env('EMAIL_USE_TLS')
@@ -177,6 +195,13 @@ PAYPAL_CLIENT_ID=env('PAYPAL_CLIENT_ID')
 #RAZORPAY
 RZP_KEY_ID=env('RZP_KEY_ID')
 RZP_KEY_SECRET=env('RZP_KEY_SECRET')
+
+# Railway bucket - 
+
+AWS_ACCESS_KEY_ID = env('ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = env('BUCKET_NAME') 
+AWS_S3_ENDPOINT_URL = env('ENDPOINT_URL')
 
 #Session timeout - automatic logout from admin.
 # SESSION_EXPIRE_SECONDS = 3600  # 1 hour = 3600 seconds

@@ -177,6 +177,8 @@ def dashboard(request):
     #user profile pic on dashboard login
     userprofile = UserProfile.objects.get(user_id=request.user.id)
 
+    # userprofile, created = UserProfile.objects.get_or_create(user_id=request.user.id)
+
     context = {
         'orders_count': orders_count,
         'userprofile': userprofile,
