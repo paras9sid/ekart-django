@@ -211,13 +211,15 @@ AWS_ACCESS_KEY_ID = env('ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = env('SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = env('BUCKET_NAME') 
 AWS_S3_ENDPOINT_URL = env('ENDPOINT_URL')
+AWS_S3_REGION_NAME = env('REGION')
+
 
 #Session timeout - automatic logout from admin.
 # SESSION_EXPIRE_SECONDS = 3600  # 1 hour = 3600 seconds
 
 SESSION_EXPIRE_SECONDS = 300 # 60 seconds = 1 minutes of no activity
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
-SESSION_TIMEOUT_REDIRECT = 'accounts/login'
+# SESSION_TIMEOUT_REDIRECT = 'accounts/login'
 
 # for indian pricing of products
 
