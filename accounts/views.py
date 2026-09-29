@@ -44,9 +44,15 @@ def register(request):
             user.save()
 
             # Create User Profile and set default image temporary for user
-            profile         = UserProfile()
-            profile.user_id = user.id
-            profile.profile_picture = 'default/default-user.jpg'
+            # profile         = UserProfile()
+            # profile.user_id = user.id
+            # profile.profile_picture = 'default/default-user.jpg'
+            
+            # Create User Profile with default image
+            profile = UserProfile.objects.create(
+                user=user,
+                profile_picture='default/default-user.jpg'
+            )         
             profile.save()
 
             # Send activation email
@@ -175,9 +181,12 @@ def dashboard(request):
     orders_count = orders.count()
 
     #user profile pic on dashboard login
-    userprofile = UserProfile.objects.get(user_id=request.user.id)
+    # userprofile = UserProfile.objects.get(user_id=request.user.id)
 
-    # userprofile, created = UserProfile.objects.get_or_create(user_id=request.user.id)
+    # to prevent user doesnt exist error
+    userprofile, created = UserProfile.objects.get_or_create(user_id=request.user.id, defaults={
+            'profile_picture': 'default/default-user.jpg'
+        })
 
     context = {
         'orders_count': orders_count,

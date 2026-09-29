@@ -11,7 +11,7 @@
 <div class="container">
 
 <div class="intro-banner-wrap">
-	<a href="https://www.freepik.com/free-photo/black-friday-elements-assortment_17658453.htm#fromView=keyword&page=1&position=23&uuid=aa32013c-1f27-482e-bf3a-0f54084367c5&query=E+commerce+banner" target="_blank"><img src="{% static 'images/banners/cover.jpg' %}" class="img-fluid rounded" alt="Image by freepik" height="200" width="800"></a>
+	<a href="https://www.freepik.com/free-photo/black-friday-elements-assortment_17658453.htm#fromView=keyword&page=1&position=23&uuid=aa32013c-1f27-482e-bf3a-0f54084367c5&query=E+commerce+banner" target="_blank"><img src="{% static 'images/banners/cover.jpg' %}" class="img-fluid rounded" alt="Image by freepik" style="height: 320px; width: 1200px;"></a>
 </div>
 
 </div> <!-- container //  -->
@@ -36,7 +36,7 @@
 				<figcaption class="info-wrap">
 					<a href="{{ product.get_url }}" class="title">{{ product.product_name }}</a>
 					<!-- <div class="price mt-1">&#8377;{{ product.price }}</div> price-wrap.// -->
-  					<div class="price mt-1">₹{{ product.price|localize }}</div> <!-- price-wrap.// -->
+  					<div class="price mt-1">₹ {{ product.price|localize }}</div> <!-- price-wrap.// -->
 
 					<div class="rating-star">
 						

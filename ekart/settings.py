@@ -26,7 +26,9 @@ SECRET_KEY=env('SECRET_KEY')
 # if using decouple - and config
 # DEBUG = env('DEBUG', default=True, cast=bool) # True - default value if nothing inside debug key
 
-DEBUG = env('DEBUG')
+# DEBUG = env('DEBUG')
+
+DEBUG = False
 
 ALLOWED_HOSTS = ['djangoekart.in','ekart-django-production.up.railway.app', '*']
 
