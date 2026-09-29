@@ -24,11 +24,11 @@ SECRET_KEY=env('SECRET_KEY')
 # DEBUG = True
 
 # if using decouple - and config
-# DEBUG = env('DEBUG', default=True, cast=bool) # True - default value if nothing inside debug key
+DEBUG = env('DEBUG', default=True, cast=bool) # True - default value if nothing inside debug key
 
 # DEBUG = env('DEBUG')
 
-DEBUG = False
+# DEBUG = False
 
 ALLOWED_HOSTS = ['djangoekart.in','ekart-django-production.up.railway.app', '*']
 
@@ -53,7 +53,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    # 'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -163,6 +163,9 @@ STATICFILES_DIRS = [
     'ekart/static',
 ]
 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -170,8 +173,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 #MEDIA FILES
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR /'media'
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR /'media'
 
 
 MESSAGE_TAGS = {
