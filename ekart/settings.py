@@ -17,7 +17,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY=env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+
+DEBUG = False
+
 
 # if using decouple - and config
 # DEBUG = env('DEBUG', default=True, cast=bool) # True - default value if nothing inside debug key
@@ -157,11 +160,11 @@ STATICFILES_DIRS = [
 
 # Railway bucket - 
 
-ACCESS_KEY_ID = env('ACCESS_KEY_ID')
-SECRET_ACCESS_KEY = env('SECRET_ACCESS_KEY')
-STORAGE_BUCKET_NAME = env('BUCKET_NAME') 
-ENDPOINT_URL = env('ENDPOINT_URL')
-REGION_NAME = env('REGION')
+AWS_ACCESS_KEY_ID = env('ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = env('BUCKET_NAME') 
+AWS_S3_ENDPOINT_URL = env('ENDPOINT_URL')
+AWS_S3_REGION_NAME = env('REGION')
 
 STORAGES = {
     "default": {
