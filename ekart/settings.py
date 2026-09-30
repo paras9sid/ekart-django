@@ -147,21 +147,21 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 
-STATIC_ROOT = BASE_DIR /'staticfiles'
+STATIC_ROOT = BASE_DIR /'static'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'ekart' / 'static',
+    'ekart/static',
 ]
 
 # Railway bucket - 
 
-AWS_ACCESS_KEY_ID = env('ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = env('SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = env('BUCKET_NAME') 
-AWS_S3_ENDPOINT_URL = env('ENDPOINT_URL')
-AWS_S3_REGION_NAME = env('REGION')
+ACCESS_KEY_ID = env('ACCESS_KEY_ID')
+SECRET_ACCESS_KEY = env('SECRET_ACCESS_KEY')
+STORAGE_BUCKET_NAME = env('BUCKET_NAME') 
+ENDPOINT_URL = env('ENDPOINT_URL')
+REGION_NAME = env('REGION')
 
 STORAGES = {
     "default": {
