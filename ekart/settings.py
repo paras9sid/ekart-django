@@ -17,10 +17,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY=env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
+DEBUG = True
 
 # if using decouple - and config
-DEBUG = env('DEBUG', default=True, cast=bool) # True - default value if nothing inside debug key
+# DEBUG = env('DEBUG', default=True, cast=bool) # True - default value if nothing inside debug key
 
 ALLOWED_HOSTS = ['djangoekart.in','ekart-django-production.up.railway.app', '*']
 
@@ -149,12 +149,19 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = BASE_DIR /'static'
+STATIC_ROOT = BASE_DIR /'staticfiles'
 
 STATICFILES_DIRS = [
-    'ekart/static',
+    BASE_DIR / 'ekart' / 'static',
 ]
 
+# Railway bucket - 
+
+AWS_ACCESS_KEY_ID = env('ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = env('BUCKET_NAME') 
+AWS_S3_ENDPOINT_URL = env('ENDPOINT_URL')
+AWS_S3_REGION_NAME = env('REGION')
 
 STORAGES = {
     "default": {
@@ -205,13 +212,7 @@ PAYPAL_CLIENT_ID=env('PAYPAL_CLIENT_ID')
 RZP_KEY_ID=env('RZP_KEY_ID')
 RZP_KEY_SECRET=env('RZP_KEY_SECRET')
 
-# Railway bucket - 
 
-AWS_ACCESS_KEY_ID = env('ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = env('SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = env('BUCKET_NAME') 
-AWS_S3_ENDPOINT_URL = env('ENDPOINT_URL')
-AWS_S3_REGION_NAME = env('REGION')
 
 
 #Session timeout - automatic logout from admin.
