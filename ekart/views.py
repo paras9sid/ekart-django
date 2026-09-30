@@ -1,7 +1,7 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 
 from store.models import Product, ReviewRating
-
 
 def home(request):
     #querySet
@@ -17,22 +17,16 @@ def home(request):
     }
     return render(request, 'home.html', context)
 
-'''
+# def home(request):
+#     products = Product.objects.filter(is_available=True).order_by('created_date')
 
-from django.shortcuts import render
-from store.models import Product, ReviewRating
+#     for product in products:
+#         product.reviews = ReviewRating.objects.filter(product_id=product.id, status=True)
 
+#     context = {
+#         'products': products,
+#     }
 
-def home(request):
-    products = Product.objects.filter(is_available=True).order_by('created_date')
-
-    for product in products:
-        product.reviews = ReviewRating.objects.filter(product_id=product.id, status=True)
-
-    context = {
-        'products': products,
-    }
-
-    return render(request, 'home.html', context)
+#     return render(request, 'home.html', context)
 
 # '''

@@ -16,19 +16,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY=env('SECRET_KEY')
 
-# if using decouple - and config
-# SECRET_KEY=config('SECRET_KEY')
-
-
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 
 # if using decouple - and config
 DEBUG = env('DEBUG', default=True, cast=bool) # True - default value if nothing inside debug key
-
-# DEBUG = env('DEBUG')
-
-# DEBUG = False
 
 ALLOWED_HOSTS = ['djangoekart.in','ekart-django-production.up.railway.app', '*']
 
@@ -53,8 +45,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.contrib.sessions.middleware.SessionMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -91,14 +83,14 @@ AUTH_USER_MODEL = 'accounts.Account' # appName(accounts).modelName(Account)
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-'''
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
-'''
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
+
 
 DATABASES = {
 
@@ -165,13 +157,24 @@ STATICFILES_DIRS = [
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# STORAGES = {
+#     "default": {
+#         "BACKEND": "storages.backends.s3.S3Storage",
+#     },
+#     "staticfiles": {
+#         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+#     },
+# }
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-#MEDIA FILES
+# # MEDIA FILES
 
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = BASE_DIR /'media'
@@ -219,7 +222,7 @@ AWS_S3_REGION_NAME = env('REGION')
 
 SESSION_EXPIRE_SECONDS = 300 # 60 seconds = 1 minutes of no activity
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
-# SESSION_TIMEOUT_REDIRECT = 'accounts/login'
+SESSION_TIMEOUT_REDIRECT = 'accounts/login'
 
 # for indian pricing of products
 
