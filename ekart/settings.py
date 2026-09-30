@@ -19,11 +19,10 @@ SECRET_KEY=env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 
-DEBUG = False
-
-
 # if using decouple - and config
 # DEBUG = env('DEBUG', default=True, cast=bool) # True - default value if nothing inside debug key
+
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['djangoekart.in','ekart-django-production.up.railway.app', '*']
 
@@ -44,6 +43,7 @@ INSTALLED_APPS = [
     "carts",
     "orders",
     "admin_honeypot",
+    "storages",
 ]
 
 MIDDLEWARE = [
@@ -150,13 +150,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
-STATIC_ROOT = BASE_DIR /'static'
+STATIC_ROOT = BASE_DIR /'staticfiles'
 
-STATICFILES_DIRS = [
-    'ekart/static',
-]
+# STATICFILES_DIRS = [
+#     'ekart/static',
+# ]
 
 # Railway bucket - 
 
